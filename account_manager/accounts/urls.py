@@ -6,8 +6,8 @@ router = DefaultRouter()
 router.register(r'users', UserViewSet)
 
 urlpatterns = [
-    path('users/signup/', UserSignupView.as_view(), name='signup'),
-    path('users/signin/', TokenObtainPairView.as_view(), name='token_signin'),
+    path('users/sign-up/', UserSignupView.as_view(), name='sign-up'),
+    path('users/sign-in/', TokenObtainPairView.as_view(), name='token_sign-in'),
     path('users/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 urlpatterns += router.urls
