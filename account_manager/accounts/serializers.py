@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import User, Credential, Project, Reminder
+from .models import User, Credential, Project, Task
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -26,14 +26,17 @@ class CredentialSerializer(serializers.ModelSerializer):
         return super().to_representation(model)
 
 
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = "__all__"
+
+
 class ProjectSerializer(serializers.ModelSerializer):
+    credentials = CredentialSerializer(many=True)
+    tasks = TaskSerializer(many=True)
+
     class Meta:
         model = Project
         fields = "__all__"
         read_only_fields = ["user"]
-
-
-class ReminderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Reminder
-        fields = "__all__"
