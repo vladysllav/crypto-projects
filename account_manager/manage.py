@@ -10,8 +10,8 @@ load_dotenv()
 
 def main():
     """Run administrative tasks."""
-    mode = "production" if "prod" in os.getenv('MODE', 'development') else "development"
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', f'account_manager.settings.{mode}')
+    mode = "production" if "prod" in os.getenv("MODE", "development") else "development"
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", f"account_manager.settings.{mode}")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -23,5 +23,5 @@ def main():
     execute_from_command_line(sys.argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
