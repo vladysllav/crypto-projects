@@ -155,3 +155,5 @@ cython_debug/
 **/docker-compose.override.yml
 **/docker-compose.*.yml
 **/Dockerfile.*
+
+*.lock

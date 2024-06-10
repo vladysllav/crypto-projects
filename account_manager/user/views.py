@@ -1,15 +1,17 @@
-from requests import Response
-from rest_framework import viewsets, permissions, status
-from rest_framework.views import APIView
+from rest_framework import permissions, status, viewsets
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import User
 from .serializers import UserSerializer
+
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+
 
 class UserSignupView(APIView):
     queryset = User.objects.all()
