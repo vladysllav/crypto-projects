@@ -5,13 +5,18 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 # Additional applications and customizations for development
 INSTALLED_APPS += [  # noqa: F405
-    "debug_toolbar",
+    "silk",
 ]
 
 MIDDLEWARE += [  # noqa: F405
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "silk.middleware.SilkyMiddleware",
 ]
 
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+# Silk settings
+SILKY_AUTHENTICATION = True
+SILKY_AUTHORISATION = True
+SILKY_PYTHON_PROFILER = True

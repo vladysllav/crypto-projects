@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 
@@ -24,3 +25,9 @@ urlpatterns = [
     path("api/users/", include("user.urls")),
     path("api/users/<int:user_id>/projects/", include("project.urls")),
 ]
+
+
+if settings.DEBUG:
+    urlpatterns += [
+        path("silk/", include("silk.urls", namespace="silk")),
+    ]
