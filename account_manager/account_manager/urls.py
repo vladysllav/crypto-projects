@@ -18,9 +18,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from .docs import urlpatterns as docs
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/auth/", include("authorization.urls")),
     path("api/users/", include("user.urls")),
     path("api/users/<int:user_id>/projects/", include("project.urls")),
 ]
+
+urlpatterns += docs
