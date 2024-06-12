@@ -19,6 +19,8 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 
+from .docs import urlpatterns as docs
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/auth/", include("authorization.urls")),
@@ -26,6 +28,7 @@ urlpatterns = [
     path("api/users/<int:user_id>/projects/", include("project.urls")),
 ]
 
+urlpatterns += docs
 
 if settings.DEBUG:
     urlpatterns += [
