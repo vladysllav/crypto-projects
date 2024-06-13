@@ -41,21 +41,11 @@ class ProjectViewSet(viewsets.ModelViewSet):
         return get_object_or_404(Project, slug=self.kwargs["slug"], user=self.request.user)
 
 
-class CredentialListView(BaseViewSet):
+class CredentialViewSet(BaseViewSet):
     serializer_class = CredentialSerializer
     model = Credential
 
 
-class CredentialDetailView(BaseViewSet):
-    serializer_class = CredentialSerializer
-    model = Credential
-
-
-class TaskListView(BaseViewSet):
-    serializer_class = TaskSerializer
-    model = Task
-
-
-class TaskDetailView(BaseViewSet):
+class TaskViewSet(BaseViewSet):
     serializer_class = TaskSerializer
     model = Task
