@@ -17,10 +17,10 @@ class UserViewSet(viewsets.ModelViewSet):
         return User.objects.filter(id=self.request.user.id)
 
     def get_object(self):
-        obj = get_object_or_404(User, id=self.kwargs.get("pk"))
-        if obj.id != self.request.user.id:
+        objс = get_object_or_404(User, id=self.kwargs.get("pk"))
+        if objс.id != self.request.user.id:
             raise PermissionDenied("You do not have permission to see this user.")
-        return obj
+        return objс
 
     def get_permissions(self):
         if self.action == "create":
@@ -41,24 +41,3 @@ class UserViewSet(viewsets.ModelViewSet):
 
         self.permission_classes = [permissions.IsAuthenticated]
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def partial_update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)

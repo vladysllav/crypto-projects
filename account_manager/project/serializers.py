@@ -7,12 +7,18 @@ class CredentialSerializer(serializers.ModelSerializer):
     class Meta:
         model = Credential
         fields = "__all__"
-        read_only_fields = ["user"]
+        read_only_fields = ["project"]
 
     def to_representation(self, model: Meta.model):
         """Represents hashed password as raw password"""
         model.password = model.get_decrypted_password()
         return super().to_representation(model)
+
+    def create(self, validated_data):
+        slug = self.context["request"].resolver_match.kwargs["slug"]
+        project = Project.objects.get(slug=slug, user=self.context["request"].user)
+        credential = Credential.objects.create(project=project, **validated_data)
+        return credential
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -32,10 +38,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = "__all__"
-        read_only_fields = ["user", "slug"]
-
-    credentials = CredentialSerializer(many=True, required=False)
-    tasks = TaskSerializer(many=True, required=False)
+        read_only_fields = ["user", "slug", "credentials", "tasks"]
 
     def create(self, validated_data):
         user = self.context["request"].user
