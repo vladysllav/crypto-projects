@@ -44,6 +44,6 @@ class ProjectSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-class ProjectRetreiveSerializer(ProjectSerializer):
+class ProjectDetailSerializer(ProjectSerializer):
     credentials = CredentialSerializer(many=True, read_only=True)
     tasks = TaskSerializer(many=True, read_only=True)
