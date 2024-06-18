@@ -10,11 +10,11 @@ detail_view = {"get": "retrieve", "put": "update", "patch": "partial_update", "d
 
 urlpatterns = [
     path("", ProjectViewSet.as_view(list_view), name="project_list"),
-    path("<slug:slug>/", ProjectViewSet.as_view(detail_view), name="project_detail"),
-    path("<slug:slug>/tasks/", TaskViewSet.as_view(list_view), name="task_list"),
-    path("<slug:slug>/tasks/<int:id>/", TaskViewSet.as_view(detail_view), name="task_detail"),
-    path("<slug:slug>/credentials/", CredentialViewSet.as_view(list_view), name="credential_list"),
-    path("<slug:slug>/credentials/<int:id>/", CredentialViewSet.as_view(detail_view), name="credential_detail"),
+    path("<int:project_id>/", ProjectViewSet.as_view(detail_view), name="project_detail"),
+    path("<int:project_id>/tasks/", TaskViewSet.as_view(list_view), name="task_list"),
+    path("<int:project_id>/tasks/<int:id>/", TaskViewSet.as_view(detail_view), name="task_detail"),
+    path("<int:project_id>/credentials/", CredentialViewSet.as_view(list_view), name="credential_list"),
+    path("<int:project_id>/credentials/<int:id>/", CredentialViewSet.as_view(detail_view), name="credential_detail"),
 ]
 
 urlpatterns += router.urls

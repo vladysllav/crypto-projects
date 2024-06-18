@@ -16,7 +16,10 @@ class CredentialSerializer(serializers.ModelSerializer):
         return super().to_representation(model)
 
     def create(self, validated_data):
-        kwargs = {"slug": self.context["request"].resolver_match.kwargs["slug"], "user": self.context["request"].user}
+        kwargs = {
+            "id": self.context["request"].resolver_match.kwargs["project_id"],
+            "user": self.context["request"].user,
+        }
         project = get_object_or_404(Project, **kwargs)
         validated_data["project"] = project
         return super().create(validated_data)
@@ -29,7 +32,10 @@ class TaskSerializer(serializers.ModelSerializer):
         read_only_fields = ["project"]
 
     def create(self, validated_data):
-        kwargs = {"slug": self.context["request"].resolver_match.kwargs["slug"], "user": self.context["request"].user}
+        kwargs = {
+            "id": self.context["request"].resolver_match.kwargs["project_id"],
+            "user": self.context["request"].user,
+        }
         project = get_object_or_404(Project, **kwargs)
         validated_data["project"] = project
         return super().create(validated_data)
@@ -39,9 +45,14 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = "__all__"
-        read_only_fields = ["user", "slug", "credentials", "tasks"]
+        read_only_fields = ["user", "slug"]
 
     def create(self, validated_data):
         user = self.context["request"].user
         validated_data["user"] = user
         return super().create(validated_data)
+
+
+class ProjectRetreiveSerializer(ProjectSerializer):
+    credentials = CredentialSerializer(many=True, read_only=True)
+    tasks = TaskSerializer(many=True, read_only=True)
