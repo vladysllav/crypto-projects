@@ -17,10 +17,10 @@ class UserViewSet(viewsets.ModelViewSet):
         return User.objects.filter(id=self.request.user.id)
 
     def get_object(self):
-        objс = get_object_or_404(User, id=self.kwargs.get("pk"))
-        if objс.id != self.request.user.id:
+        obj = get_object_or_404(User, id=self.kwargs.get("pk"))
+        if obj.id != self.request.user.id:
             raise PermissionDenied("You do not have permission to see this user.")
-        return objс
+        return obj
 
     def get_permissions(self):
         if self.action == "create":
