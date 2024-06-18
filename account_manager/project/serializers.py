@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.generics import get_object_or_404
 
 from .models import Credential, Project, Task
 
@@ -16,12 +15,8 @@ class CredentialSerializer(serializers.ModelSerializer):
         return super().to_representation(model)
 
     def create(self, validated_data):
-        kwargs = {
-            "id": self.context["request"].resolver_match.kwargs["project_id"],
-            "user": self.context["request"].user,
-        }
-        project = get_object_or_404(Project, **kwargs)
-        validated_data["project"] = project
+        project_id = self.context["request"].resolver_match.kwargs["project_id"]
+        validated_data["project_id"] = project_id
         return super().create(validated_data)
 
 
@@ -32,12 +27,8 @@ class TaskSerializer(serializers.ModelSerializer):
         read_only_fields = ["project"]
 
     def create(self, validated_data):
-        kwargs = {
-            "id": self.context["request"].resolver_match.kwargs["project_id"],
-            "user": self.context["request"].user,
-        }
-        project = get_object_or_404(Project, **kwargs)
-        validated_data["project"] = project
+        project_id = self.context["request"].resolver_match.kwargs["project_id"]
+        validated_data["project_id"] = project_id
         return super().create(validated_data)
 
 
