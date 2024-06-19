@@ -32,6 +32,16 @@ services:
       - ./:/code/
       - app-logs:/var/log/app
 
+  test:
+    image: account_manager:latest
+    container_name: test
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: /bin/bash -c "python manage.py migrate && pytest"
+    volumes:
+      - ./:/code/
+
 volumes:
   db-data: { }
   db-logs: { }
