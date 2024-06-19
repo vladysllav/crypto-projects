@@ -1,13 +1,14 @@
-from rest_framework import viewsets
+from drf_spectacular.utils import extend_schema
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ModelViewSet
 
 from .models import Credential, Project, Task
-from .serializers import CredentialSerializer, ProjectRetreiveSerializer, ProjectSerializer, TaskSerializer
+from .serializers import CredentialSerializer, ProjectDetailSerializer, ProjectSerializer, TaskSerializer
 
 
-class BaseViewSet(viewsets.ModelViewSet):
+class BaseViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     model = None
 
@@ -24,7 +25,8 @@ class BaseViewSet(viewsets.ModelViewSet):
         return get_object_or_404(self.model, **kwargs)
 
 
-class ProjectViewSet(viewsets.ModelViewSet):
+@extend_schema(tags=["projects"])
+class ProjectViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -37,15 +39,17 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == "retrieve":
-            return ProjectRetreiveSerializer
+            return ProjectDetailSerializer
         return ProjectSerializer
 
 
+@extend_schema(tags=["project-credentials"])
 class CredentialViewSet(BaseViewSet):
     serializer_class = CredentialSerializer
     model = Credential
 
 
+@extend_schema(tags=["project-tasks"])
 class TaskViewSet(BaseViewSet):
     serializer_class = TaskSerializer
     model = Task
