@@ -1,6 +1,6 @@
 import os
 
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -25,11 +25,10 @@ class Project(models.Model):
 class Credential(models.Model):
     email = models.EmailField(_("email address"))
     password = models.CharField(_("password"), max_length=128)
-    is_new_password = models.BooleanField(_("is new password"), default=True)
+    service_name = models.CharField(_("service name"), max_length=50)
 
     username = models.CharField(_("username"), max_length=150, null=True, blank=True)
     phone_number = models.CharField(_("phone number"), max_length=15, null=True, blank=True)
-    service_name = models.CharField(_("service name"), max_length=50)
     login_url = models.URLField(_("login url"), null=True, blank=True)
 
     objects = models.Manager()
@@ -39,22 +38,30 @@ class Credential(models.Model):
         return f"Service: {self.service_name}; User: {self.project.user}"
 
     def save(self, *args, **kwargs):
-        if self.is_new_password:
+        if not self.is_encrypted_password:
             self.set_password()
         super().save(*args, **kwargs)
+
+    @property
+    def is_encrypted_password(self):
+        try:
+            self.decrypt_password()
+        except InvalidToken:
+            return False
+        return True
 
     @property
     def encryption_key(self):
         return os.getenv("ENCRYPTION_KEY").encode()
 
     def set_password(self):
-        self.is_new_password = False
-        cipher_suite = Fernet(self.encryption_key)
-        self.password = cipher_suite.encrypt(str(self.password).encode()).decode()
+        self.password = self.encrypt_password()
 
-    def get_decrypted_password(self):
-        cipher_suite = Fernet(self.encryption_key)
-        return cipher_suite.decrypt(self.password.encode()).decode()
+    def encrypt_password(self):
+        return Fernet(self.encryption_key).encrypt(self.password.encode()).decode()
+
+    def decrypt_password(self):
+        return Fernet(self.encryption_key).decrypt(self.password.encode()).decode()
 
 
 class Task(models.Model):
