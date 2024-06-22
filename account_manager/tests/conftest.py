@@ -1,10 +1,12 @@
 from collections import namedtuple
+from datetime import datetime
 
 import pytest
 from rest_framework.test import APIClient
 
 from project.models import Credential as CredentialModel
 from project.models import Project as ProjectModel
+from project.models import Task as TaskModel
 from user.models import User as UserModel
 
 
@@ -47,7 +49,7 @@ def projects(users):
 
 
 # ----- Credential Fixtures --------------------------------------------------------------------------------------------
-Credential = namedtuple("Credentials", ["cred__project__user1", "cred__project__user2"])
+Credentials = namedtuple("Credentials", ["cred__project__user1", "cred__project__user2"])
 
 
 @pytest.fixture
@@ -61,4 +63,22 @@ def credentials(projects):
 
     cred__project__user1 = CredentialModel.objects.create(project=projects.project__user1, **data)
     cred__project__user2 = CredentialModel.objects.create(project=projects.project__user2, **data)
-    return Credential(cred__project__user1, cred__project__user2)
+    return Credentials(cred__project__user1, cred__project__user2)
+
+
+# ----- Task Fixtures --------------------------------------------------------------------------------------------------
+Tasks = namedtuple("Tasks", ["task__project__user1", "task__project__user2"])
+
+
+@pytest.fixture
+def tasks(projects):
+    data = {
+        "title": "Task 1",
+        "description": "Task Description",
+        "remind_at": datetime.now(),
+        "is_active": True,
+    }
+
+    task__project__user1 = TaskModel.objects.create(project=projects.project__user1, **data)
+    task__project__user2 = TaskModel.objects.create(project=projects.project__user2, **data)
+    return Tasks(task__project__user1, task__project__user2)

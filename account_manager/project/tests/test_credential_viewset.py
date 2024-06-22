@@ -6,7 +6,7 @@ from rest_framework import status
 
 from project.models import Credential as CredentialModel
 
-from .conftest import Projects, Users
+from .conftest import Credentials, Projects, Users
 
 # ----- CredentialViewSet Test Case Schemas ----------------------------------------------------------------------------
 ListTestCase = namedtuple("TestCase", ["auth_user", "project", "expected_status"])
@@ -73,7 +73,7 @@ class TestCredentialViewSet:
         self.client = auth_client
         self.users: Users = users
         self.projects: Projects = projects
-        self.credentials = credentials
+        self.credentials: Credentials = credentials
 
         self.create_data = testcase_data.get("credential").for_create
         self.update_data = testcase_data.get("credential").for_update

@@ -3,7 +3,18 @@ from datetime import datetime
 
 import pytest
 
-from tests.conftest import Projects, Users, api_client, auth_client, credentials, projects, users  # noqa: F401
+from tests.conftest import (  # noqa: F401
+    Credentials,
+    Projects,
+    Tasks,
+    Users,
+    api_client,
+    auth_client,
+    credentials,
+    projects,
+    tasks,
+    users,
+)
 
 # ----- Data Fixtures --------------------------------------------------------------------------------------------------
 DataType = namedtuple("DataType", ["for_create", "for_update", "for_partial_update", "optional_fields"])
