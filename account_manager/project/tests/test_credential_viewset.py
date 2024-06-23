@@ -1,4 +1,4 @@
-from collections import namedtuple
+from collections import namedtuple as nt
 
 import pytest
 from django.urls import reverse
@@ -9,67 +9,67 @@ from project.models import Credential as CredentialModel
 from .conftest import Credentials, Projects, Users
 
 # ----- CredentialViewSet Test Case Schemas ----------------------------------------------------------------------------
-ListTestCase = namedtuple("TestCase", ["auth_user", "project", "expected_status"])
-CreateTestCase = namedtuple("TestCase", ["auth_user", "project", "include_optional_fields", "expected_status"])
-RetrieveTestCase = namedtuple("TestCase", ["auth_user", "credential", "expected_status"])
-UpdateTestCase = namedtuple("TestCase", ["auth_user", "credential", "include_optional_fields", "expected_status"])
-PartialUpdateTestCase = namedtuple("TestCase", ["auth_user", "credential", "expected_status"])
-DestroyTestCase = namedtuple("TestCase", ["auth_user", "credential", "expected_status"])
+L_TestCase = nt("List", ["auth_user", "project", "expected_status"])
+C_TestCase = nt("Create", ["auth_user", "project", "include_optional_fields", "expected_status"])
+R_TestCase = nt("Retrieve", ["auth_user", "credential", "expected_status"])
+U_TestCase = nt("Update", ["auth_user", "credential", "include_optional_fields", "expected_status"])
+P_TestCase = nt("PartialUpdate", ["auth_user", "credential", "expected_status"])
+D_TestCase = nt("Destroy", ["auth_user", "credential", "expected_status"])
 
 # ----- CredentialViewSet Test Cases -----------------------------------------------------------------------------------
 list_credential_test_cases = [
     # "auth_user", "project", "expected_status"
-    ListTestCase("not_auth", "project__user1", status.HTTP_401_UNAUTHORIZED),
-    ListTestCase("admin", "project__user1", status.HTTP_200_OK),
-    ListTestCase("user1", "project__user1", status.HTTP_200_OK),
-    ListTestCase("user1", "project__user2", status.HTTP_403_FORBIDDEN),
+    L_TestCase("not_auth", "project__user1", status.HTTP_401_UNAUTHORIZED),
+    L_TestCase("admin", "project__user1", status.HTTP_200_OK),
+    L_TestCase("user1", "project__user1", status.HTTP_200_OK),
+    L_TestCase("user1", "project__user2", status.HTTP_403_FORBIDDEN),
 ]
 create_credential_test_cases = [
     # "auth_user", "project", "include_optional_fields", "expected_status"
-    CreateTestCase("not_auth", "project__user1", False, status.HTTP_401_UNAUTHORIZED),
-    CreateTestCase("admin", "project__user1", False, status.HTTP_201_CREATED),
-    CreateTestCase("user1", "project__user1", False, status.HTTP_201_CREATED),
-    CreateTestCase("user1", "project__user1", True, status.HTTP_201_CREATED),
-    CreateTestCase("user1", "project__user2", False, status.HTTP_403_FORBIDDEN),
+    C_TestCase("not_auth", "project__user1", False, status.HTTP_401_UNAUTHORIZED),
+    C_TestCase("admin", "project__user1", False, status.HTTP_201_CREATED),
+    C_TestCase("user1", "project__user1", False, status.HTTP_201_CREATED),
+    C_TestCase("user1", "project__user1", True, status.HTTP_201_CREATED),
+    C_TestCase("user1", "project__user2", False, status.HTTP_403_FORBIDDEN),
 ]
 retrieve_credential_test_cases = [
     # "auth_user", "credential", "expected_status"
-    RetrieveTestCase("not_auth", "cred__project__user1", status.HTTP_401_UNAUTHORIZED),
-    RetrieveTestCase("admin", "cred__project__user1", status.HTTP_200_OK),
-    RetrieveTestCase("user1", "cred__project__user1", status.HTTP_200_OK),
-    RetrieveTestCase("user1", "cred__project__user2", status.HTTP_403_FORBIDDEN),
+    R_TestCase("not_auth", "cred__project__user1", status.HTTP_401_UNAUTHORIZED),
+    R_TestCase("admin", "cred__project__user1", status.HTTP_200_OK),
+    R_TestCase("user1", "cred__project__user1", status.HTTP_200_OK),
+    R_TestCase("user1", "cred__project__user2", status.HTTP_403_FORBIDDEN),
 ]
 update_credential_test_cases = [
     # "auth_user", "credential", "include_optional_fields", "expected_status"
-    UpdateTestCase("not_auth", "cred__project__user1", False, status.HTTP_401_UNAUTHORIZED),
-    UpdateTestCase("admin", "cred__project__user1", False, status.HTTP_200_OK),
-    UpdateTestCase("user1", "cred__project__user1", False, status.HTTP_200_OK),
-    UpdateTestCase("user1", "cred__project__user2", False, status.HTTP_403_FORBIDDEN),
+    U_TestCase("not_auth", "cred__project__user1", False, status.HTTP_401_UNAUTHORIZED),
+    U_TestCase("admin", "cred__project__user1", False, status.HTTP_200_OK),
+    U_TestCase("user1", "cred__project__user1", False, status.HTTP_200_OK),
+    U_TestCase("user1", "cred__project__user2", False, status.HTTP_403_FORBIDDEN),
 ]
 partial_update_credential_test_cases = [
     # "auth_user", "credential", "partial_update_data", "expected_status"
-    PartialUpdateTestCase("not_auth", "cred__project__user1", status.HTTP_401_UNAUTHORIZED),
-    PartialUpdateTestCase("admin", "cred__project__user1", status.HTTP_200_OK),
-    PartialUpdateTestCase("user1", "cred__project__user1", status.HTTP_200_OK),
-    PartialUpdateTestCase("user1", "cred__project__user2", status.HTTP_403_FORBIDDEN),
+    P_TestCase("not_auth", "cred__project__user1", status.HTTP_401_UNAUTHORIZED),
+    P_TestCase("admin", "cred__project__user1", status.HTTP_200_OK),
+    P_TestCase("user1", "cred__project__user1", status.HTTP_200_OK),
+    P_TestCase("user1", "cred__project__user2", status.HTTP_403_FORBIDDEN),
 ]
 destroy_credential_test_cases = [
     # "auth_user", "credential", "expected_status"
-    DestroyTestCase("not_auth", "cred__project__user1", status.HTTP_401_UNAUTHORIZED),
-    DestroyTestCase("admin", "cred__project__user1", status.HTTP_204_NO_CONTENT),
-    DestroyTestCase("user1", "cred__project__user1", status.HTTP_204_NO_CONTENT),
-    DestroyTestCase("user1", "cred__project__user2", status.HTTP_403_FORBIDDEN),
+    D_TestCase("not_auth", "cred__project__user1", status.HTTP_401_UNAUTHORIZED),
+    D_TestCase("admin", "cred__project__user1", status.HTTP_204_NO_CONTENT),
+    D_TestCase("user1", "cred__project__user1", status.HTTP_204_NO_CONTENT),
+    D_TestCase("user1", "cred__project__user2", status.HTTP_403_FORBIDDEN),
 ]
 
 
 # ----- CredentialViewSet Tests ----------------------------------------------------------------------------------------
-@pytest.mark.django_db(transaction=True)
+@pytest.mark.django_db
 class TestCredentialViewSet:
 
     model = CredentialModel
 
     @pytest.fixture(autouse=True)
-    def setup_method(self, auth_client, users, projects, credentials, testcase_data):
+    def inject_fixtures(self, auth_client, users, projects, credentials, testcase_data):
         self.client = auth_client
         self.users: Users = users
         self.projects: Projects = projects
@@ -82,7 +82,7 @@ class TestCredentialViewSet:
 
     # ----- List Credential --------------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", list_credential_test_cases)
-    def test_list_credential(self, test_case: ListTestCase):
+    def test_list_credential(self, test_case: L_TestCase):
         client = self.get_testcase_client(test_case)
         project = self.get_testcase_project(test_case)
 
@@ -97,7 +97,7 @@ class TestCredentialViewSet:
 
     # ----- Create Credential ------------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", create_credential_test_cases)
-    def test_create_credential(self, test_case: CreateTestCase):
+    def test_create_credential(self, test_case: C_TestCase):
         client = self.get_testcase_client(test_case)
         project = self.get_testcase_project(test_case)
         credentials_count = self.initial_credential_count(project)
@@ -113,7 +113,7 @@ class TestCredentialViewSet:
 
     # ----- Retrieve Credential ----------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", retrieve_credential_test_cases)
-    def test_retrieve_credential(self, test_case: RetrieveTestCase):
+    def test_retrieve_credential(self, test_case: R_TestCase):
         client, credential = self.get_testcase_client_and_credential(test_case)
         project, user = credential.project, credential.project.user
 
@@ -127,7 +127,7 @@ class TestCredentialViewSet:
 
     # ----- Update Credential ------------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", update_credential_test_cases)
-    def test_update_credential(self, test_case: UpdateTestCase):
+    def test_update_credential(self, test_case: U_TestCase):
         client, credential = self.get_testcase_client_and_credential(test_case)
         project, user = credential.project, credential.project.user
 
@@ -142,7 +142,7 @@ class TestCredentialViewSet:
 
     # ----- Partial Update Credential ----------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", partial_update_credential_test_cases)
-    def test_partial_update_credential(self, test_case: PartialUpdateTestCase):
+    def test_partial_update_credential(self, test_case: P_TestCase):
         client, credential = self.get_testcase_client_and_credential(test_case)
         project, user = credential.project, credential.project.user
 
@@ -157,7 +157,7 @@ class TestCredentialViewSet:
 
     # ----- Destroy Credential -----------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", destroy_credential_test_cases)
-    def test_destroy_credential(self, test_case: DestroyTestCase):
+    def test_destroy_credential(self, test_case: D_TestCase):
         client, credential = self.get_testcase_client_and_credential(test_case)
         project, user = credential.project, credential.project.user
         credentials_count = self.initial_credential_count(project)

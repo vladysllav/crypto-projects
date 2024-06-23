@@ -11,6 +11,7 @@ from tests.conftest import (  # noqa: F401
     api_client,
     auth_client,
     credentials,
+    django_db_setup,
     projects,
     tasks,
     users,

@@ -1,4 +1,4 @@
-from collections import namedtuple
+from collections import namedtuple as nt
 
 import pytest
 from django.urls import reverse
@@ -9,67 +9,68 @@ from project.models import Project as ProjectModel
 from .conftest import Projects, Users
 
 # ----- ProjectViewSet Test Case Schemas -------------------------------------------------------------------------------
-ListTestCase = namedtuple("TestCase", ["auth_user", "user", "expected_status"])
-CreateTestCase = namedtuple("TestCase", ["auth_user", "user", "include_optional_fields", "expected_status"])
-RetrieveTestCase = namedtuple("TestCase", ["auth_user", "project", "expected_status"])
-UpdateTestCase = namedtuple("TestCase", ["auth_user", "project", "include_optional_fields", "expected_status"])
-PartialUpdateTestCase = namedtuple("TestCase", ["auth_user", "project", "expected_status"])
-DestroyTestCase = namedtuple("TestCase", ["auth_user", "project", "expected_status"])
+L_TestCase = nt("List", ["auth_user", "user", "expected_status"])
+C_TestCase = nt("Create", ["auth_user", "user", "include_optional_fields", "expected_status"])
+R_TestCase = nt("Retrieve", ["auth_user", "project", "expected_status"])
+U_TestCase = nt("Update", ["auth_user", "project", "include_optional_fields", "expected_status"])
+P_TestCase = nt("PartialUpdate", ["auth_user", "project", "expected_status"])
+D_TestCase = nt("Destroy", ["auth_user", "project", "expected_status"])
 
 # ----- ProjectViewSet Test Cases --------------------------------------------------------------------------------------
 list_project_test_cases = [
     # "auth_user", "user", "expected_status"
-    ListTestCase("not_auth", "user1", status.HTTP_401_UNAUTHORIZED),
-    ListTestCase("admin", "admin", status.HTTP_404_NOT_FOUND),
-    ListTestCase("admin", "user1", status.HTTP_200_OK),
-    ListTestCase("user1", "user1", status.HTTP_200_OK),
-    ListTestCase("user1", "user2", status.HTTP_403_FORBIDDEN),
+    L_TestCase("not_auth", "user1", status.HTTP_401_UNAUTHORIZED),
+    L_TestCase("admin", "admin", status.HTTP_404_NOT_FOUND),
+    L_TestCase("admin", "user1", status.HTTP_200_OK),
+    L_TestCase("user1", "user1", status.HTTP_200_OK),
+    L_TestCase("user1", "user2", status.HTTP_403_FORBIDDEN),
 ]
 create_project_test_cases = [
     # "auth_user", "user", "include_optional_fields", "expected_status"
-    CreateTestCase("not_auth", "user1", False, status.HTTP_401_UNAUTHORIZED),
-    CreateTestCase("admin", "user1", False, status.HTTP_201_CREATED),
-    CreateTestCase("user1", "user1", False, status.HTTP_201_CREATED),
-    CreateTestCase("user1", "user1", True, status.HTTP_201_CREATED),
-    CreateTestCase("user1", "user2", False, status.HTTP_403_FORBIDDEN),
+    C_TestCase("not_auth", "user1", False, status.HTTP_401_UNAUTHORIZED),
+    C_TestCase("admin", "user1", False, status.HTTP_201_CREATED),
+    C_TestCase("user1", "user1", False, status.HTTP_201_CREATED),
+    C_TestCase("user1", "user1", True, status.HTTP_201_CREATED),
+    C_TestCase("user1", "user2", False, status.HTTP_403_FORBIDDEN),
 ]
 retrieve_project_test_cases = [
     # "auth_user", "project", "expected_status"
-    RetrieveTestCase("not_auth", "project__user1", status.HTTP_401_UNAUTHORIZED),
-    RetrieveTestCase("admin", "project__user1", status.HTTP_200_OK),
-    RetrieveTestCase("user1", "project__user1", status.HTTP_200_OK),
-    RetrieveTestCase("user1", "project__user2", status.HTTP_403_FORBIDDEN),
+    R_TestCase("not_auth", "project__user1", status.HTTP_401_UNAUTHORIZED),
+    R_TestCase("admin", "project__user1", status.HTTP_200_OK),
+    R_TestCase("user1", "project__user1", status.HTTP_200_OK),
+    R_TestCase("user1", "project__user2", status.HTTP_403_FORBIDDEN),
 ]
 update_project_test_cases = [
     # "auth_user", "project", "include_optional_fields", "expected_status"
-    UpdateTestCase("not_auth", "project__user1", False, status.HTTP_401_UNAUTHORIZED),
-    UpdateTestCase("admin", "project__user1", False, status.HTTP_200_OK),
-    UpdateTestCase("user1", "project__user1", False, status.HTTP_200_OK),
-    UpdateTestCase("user1", "project__user2", False, status.HTTP_403_FORBIDDEN),
+    U_TestCase("not_auth", "project__user1", False, status.HTTP_401_UNAUTHORIZED),
+    U_TestCase("admin", "project__user1", False, status.HTTP_200_OK),
+    U_TestCase("user1", "project__user1", False, status.HTTP_200_OK),
+    U_TestCase("user1", "project__user2", False, status.HTTP_403_FORBIDDEN),
 ]
 partial_update_project_test_cases = [
     # "auth_user", "project", "expected_status"
-    PartialUpdateTestCase("not_auth", "project__user1", status.HTTP_401_UNAUTHORIZED),
-    PartialUpdateTestCase("admin", "project__user1", status.HTTP_200_OK),
-    PartialUpdateTestCase("user1", "project__user1", status.HTTP_200_OK),
-    PartialUpdateTestCase("user1", "project__user2", status.HTTP_403_FORBIDDEN),
+    P_TestCase("not_auth", "project__user1", status.HTTP_401_UNAUTHORIZED),
+    P_TestCase("admin", "project__user1", status.HTTP_200_OK),
+    P_TestCase("user1", "project__user1", status.HTTP_200_OK),
+    P_TestCase("user1", "project__user2", status.HTTP_403_FORBIDDEN),
 ]
 destroy_project_test_cases = [
     # "auth_user", "project", "expected_status"
-    DestroyTestCase("not_auth", "project__user1", status.HTTP_401_UNAUTHORIZED),
-    DestroyTestCase("admin", "project__user1", status.HTTP_204_NO_CONTENT),
-    DestroyTestCase("user1", "project__user1", status.HTTP_204_NO_CONTENT),
-    DestroyTestCase("user1", "project__user2", status.HTTP_403_FORBIDDEN),
+    D_TestCase("not_auth", "project__user1", status.HTTP_401_UNAUTHORIZED),
+    D_TestCase("admin", "project__user1", status.HTTP_204_NO_CONTENT),
+    D_TestCase("user1", "project__user1", status.HTTP_204_NO_CONTENT),
+    D_TestCase("user1", "project__user2", status.HTTP_403_FORBIDDEN),
 ]
 
 
 # ----- ProjectViewSet Tests -------------------------------------------------------------------------------------------
-@pytest.mark.django_db(transaction=True)
+@pytest.mark.django_db
 class TestProjectViewSet:
+
     model = ProjectModel
 
     @pytest.fixture(autouse=True)
-    def setup_method(self, auth_client, users, projects, testcase_data):
+    def inject_fixtures(self, auth_client, users, projects, testcase_data):
         self.client = auth_client
         self.users: Users = users
         self.projects: Projects = projects
@@ -81,7 +82,7 @@ class TestProjectViewSet:
 
     # ----- List Project -----------------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", list_project_test_cases)
-    def test_list_project(self, test_case: ListTestCase):
+    def test_list_project(self, test_case: L_TestCase):
         client, user = self.get_testcase_client_and_user(test_case)
 
         url = reverse("project-list", kwargs={"user_id": user.id})
@@ -94,7 +95,7 @@ class TestProjectViewSet:
 
     # ----- Create Project ---------------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", create_project_test_cases)
-    def test_create_project(self, test_case: CreateTestCase):
+    def test_create_project(self, test_case: C_TestCase):
         client, user = self.get_testcase_client_and_user(test_case)
         projects_count = self.initial_project_count(user)
 
@@ -108,7 +109,7 @@ class TestProjectViewSet:
 
     # ----- Retrieve Project -------------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", retrieve_project_test_cases)
-    def test_retrieve_project(self, test_case: RetrieveTestCase):
+    def test_retrieve_project(self, test_case: R_TestCase):
         client, project = self.get_testcase_client_and_project(test_case)
 
         url = reverse("project-detail", kwargs={"user_id": project.user.id, "project_id": project.id})
@@ -120,7 +121,7 @@ class TestProjectViewSet:
 
     # ----- Update Project ---------------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", update_project_test_cases)
-    def test_update_project(self, test_case: UpdateTestCase):
+    def test_update_project(self, test_case: U_TestCase):
         client, project = self.get_testcase_client_and_project(test_case)
 
         url = reverse("project-detail", kwargs={"user_id": project.user.id, "project_id": project.id})
@@ -133,7 +134,7 @@ class TestProjectViewSet:
 
     # ----- Partial Update Project -------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", partial_update_project_test_cases)
-    def test_partial_update_project(self, test_case: PartialUpdateTestCase):
+    def test_partial_update_project(self, test_case: P_TestCase):
         client, project = self.get_testcase_client_and_project(test_case)
 
         url = reverse("project-detail", kwargs={"user_id": project.user.id, "project_id": project.id})
@@ -146,7 +147,7 @@ class TestProjectViewSet:
 
     # ----- Destroy Project --------------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", destroy_project_test_cases)
-    def test_destroy_project(self, test_case: DestroyTestCase):
+    def test_destroy_project(self, test_case: D_TestCase):
         client, project = self.get_testcase_client_and_project(test_case)
         projects_count = self.initial_project_count(project.user)
 

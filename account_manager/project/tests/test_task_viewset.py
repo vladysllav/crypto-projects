@@ -1,4 +1,4 @@
-from collections import namedtuple
+from collections import namedtuple as nt
 
 import pytest
 from django.urls import reverse
@@ -9,67 +9,67 @@ from project.models import Task as TaskModel
 from .conftest import Projects, Tasks, Users
 
 # ----- TaskViewSet Test Case Schemas ----------------------------------------------------------------------------------
-ListTestCase = namedtuple("TestCase", ["auth_user", "project", "expected_status"])
-CreateTestCase = namedtuple("TestCase", ["auth_user", "project", "include_optional_fields", "expected_status"])
-RetrieveTestCase = namedtuple("TestCase", ["auth_user", "task", "expected_status"])
-UpdateTestCase = namedtuple("TestCase", ["auth_user", "task", "include_optional_fields", "expected_status"])
-PartialUpdateTestCase = namedtuple("TestCase", ["auth_user", "task", "expected_status"])
-DestroyTestCase = namedtuple("TestCase", ["auth_user", "task", "expected_status"])
+L_TestCase = nt("List", ["auth_user", "project", "expected_status"])
+C_TestCase = nt("Create", ["auth_user", "project", "include_optional_fields", "expected_status"])
+R_TestCase = nt("Retrieve", ["auth_user", "task", "expected_status"])
+U_TestCase = nt("Update", ["auth_user", "task", "include_optional_fields", "expected_status"])
+P_TestCase = nt("PartialUpdate", ["auth_user", "task", "expected_status"])
+D_TestCase = nt("Destroy", ["auth_user", "task", "expected_status"])
 
 # ----- TaskViewSet Test Cases -----------------------------------------------------------------------------------------
 list_task_test_cases = [
     # "auth_user", "project", "expected_status"
-    ListTestCase("not_auth", "project__user1", status.HTTP_401_UNAUTHORIZED),
-    ListTestCase("admin", "project__user1", status.HTTP_200_OK),
-    ListTestCase("user1", "project__user1", status.HTTP_200_OK),
-    ListTestCase("user1", "project__user2", status.HTTP_403_FORBIDDEN),
+    L_TestCase("not_auth", "project__user1", status.HTTP_401_UNAUTHORIZED),
+    L_TestCase("admin", "project__user1", status.HTTP_200_OK),
+    L_TestCase("user1", "project__user1", status.HTTP_200_OK),
+    L_TestCase("user1", "project__user2", status.HTTP_403_FORBIDDEN),
 ]
 create_task_test_cases = [
     # "auth_user", "project", "include_optional_fields", "expected_status"
-    CreateTestCase("not_auth", "project__user1", False, status.HTTP_401_UNAUTHORIZED),
-    CreateTestCase("admin", "project__user1", False, status.HTTP_201_CREATED),
-    CreateTestCase("user1", "project__user1", False, status.HTTP_201_CREATED),
-    CreateTestCase("user1", "project__user1", True, status.HTTP_201_CREATED),
-    CreateTestCase("user1", "project__user2", False, status.HTTP_403_FORBIDDEN),
+    C_TestCase("not_auth", "project__user1", False, status.HTTP_401_UNAUTHORIZED),
+    C_TestCase("admin", "project__user1", False, status.HTTP_201_CREATED),
+    C_TestCase("user1", "project__user1", False, status.HTTP_201_CREATED),
+    C_TestCase("user1", "project__user1", True, status.HTTP_201_CREATED),
+    C_TestCase("user1", "project__user2", False, status.HTTP_403_FORBIDDEN),
 ]
 retrieve_task_test_cases = [
     # "auth_user", "task", "expected_status"
-    RetrieveTestCase("not_auth", "task__project__user1", status.HTTP_401_UNAUTHORIZED),
-    RetrieveTestCase("admin", "task__project__user1", status.HTTP_200_OK),
-    RetrieveTestCase("user1", "task__project__user1", status.HTTP_200_OK),
-    RetrieveTestCase("user1", "task__project__user2", status.HTTP_403_FORBIDDEN),
+    R_TestCase("not_auth", "task__project__user1", status.HTTP_401_UNAUTHORIZED),
+    R_TestCase("admin", "task__project__user1", status.HTTP_200_OK),
+    R_TestCase("user1", "task__project__user1", status.HTTP_200_OK),
+    R_TestCase("user1", "task__project__user2", status.HTTP_403_FORBIDDEN),
 ]
 update_task_test_cases = [
     # "auth_user", "task", "include_optional_fields", "expected_status"
-    UpdateTestCase("not_auth", "task__project__user1", False, status.HTTP_401_UNAUTHORIZED),
-    UpdateTestCase("admin", "task__project__user1", False, status.HTTP_200_OK),
-    UpdateTestCase("user1", "task__project__user1", False, status.HTTP_200_OK),
-    UpdateTestCase("user1", "task__project__user2", False, status.HTTP_403_FORBIDDEN),
+    U_TestCase("not_auth", "task__project__user1", False, status.HTTP_401_UNAUTHORIZED),
+    U_TestCase("admin", "task__project__user1", False, status.HTTP_200_OK),
+    U_TestCase("user1", "task__project__user1", False, status.HTTP_200_OK),
+    U_TestCase("user1", "task__project__user2", False, status.HTTP_403_FORBIDDEN),
 ]
 partial_update_task_test_cases = [
     # "auth_user", "task", "partial_update_data", "expected_status"
-    PartialUpdateTestCase("not_auth", "task__project__user1", status.HTTP_401_UNAUTHORIZED),
-    PartialUpdateTestCase("admin", "task__project__user1", status.HTTP_200_OK),
-    PartialUpdateTestCase("user1", "task__project__user1", status.HTTP_200_OK),
-    PartialUpdateTestCase("user1", "task__project__user2", status.HTTP_403_FORBIDDEN),
+    P_TestCase("not_auth", "task__project__user1", status.HTTP_401_UNAUTHORIZED),
+    P_TestCase("admin", "task__project__user1", status.HTTP_200_OK),
+    P_TestCase("user1", "task__project__user1", status.HTTP_200_OK),
+    P_TestCase("user1", "task__project__user2", status.HTTP_403_FORBIDDEN),
 ]
 destroy_task_test_cases = [
     # "auth_user", "task", "expected_status"
-    DestroyTestCase("not_auth", "task__project__user1", status.HTTP_401_UNAUTHORIZED),
-    DestroyTestCase("admin", "task__project__user1", status.HTTP_204_NO_CONTENT),
-    DestroyTestCase("user1", "task__project__user1", status.HTTP_204_NO_CONTENT),
-    DestroyTestCase("user1", "task__project__user2", status.HTTP_403_FORBIDDEN),
+    D_TestCase("not_auth", "task__project__user1", status.HTTP_401_UNAUTHORIZED),
+    D_TestCase("admin", "task__project__user1", status.HTTP_204_NO_CONTENT),
+    D_TestCase("user1", "task__project__user1", status.HTTP_204_NO_CONTENT),
+    D_TestCase("user1", "task__project__user2", status.HTTP_403_FORBIDDEN),
 ]
 
 
 # ----- TaskViewSet Tests ----------------------------------------------------------------------------------------------
-@pytest.mark.django_db(transaction=True)
+@pytest.mark.django_db
 class TestTaskViewSet:
 
     model = TaskModel
 
     @pytest.fixture(autouse=True)
-    def setup_method(self, auth_client, users, projects, tasks, testcase_data):
+    def inject_fixtures(self, auth_client, users, projects, tasks, testcase_data):
         self.client = auth_client
         self.users: Users = users
         self.projects: Projects = projects
@@ -82,7 +82,7 @@ class TestTaskViewSet:
 
     # ----- List Task --------------------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", list_task_test_cases)
-    def test_list_task(self, test_case: ListTestCase):
+    def test_list_task(self, test_case: L_TestCase):
         client = self.get_testcase_client(test_case)
         project = self.get_testcase_project(test_case)
 
@@ -97,7 +97,7 @@ class TestTaskViewSet:
 
     # ----- Create Task ------------------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", create_task_test_cases)
-    def test_create_task(self, test_case: CreateTestCase):
+    def test_create_task(self, test_case: C_TestCase):
         client = self.get_testcase_client(test_case)
         project = self.get_testcase_project(test_case)
         tasks_count = self.initial_task_count(project)
@@ -113,7 +113,7 @@ class TestTaskViewSet:
 
     # ----- Retrieve Task ----------------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", retrieve_task_test_cases)
-    def test_retrieve_task(self, test_case: RetrieveTestCase):
+    def test_retrieve_task(self, test_case: R_TestCase):
         client, task = self.get_testcase_client_and_task(test_case)
         project, user = task.project, task.project.user
 
@@ -127,7 +127,7 @@ class TestTaskViewSet:
 
     # ----- Update Task ------------------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", update_task_test_cases)
-    def test_update_task(self, test_case: UpdateTestCase):
+    def test_update_task(self, test_case: U_TestCase):
         client, task = self.get_testcase_client_and_task(test_case)
         project, user = task.project, task.project.user
 
@@ -142,7 +142,7 @@ class TestTaskViewSet:
 
     # ----- Partial Update Task ----------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", partial_update_task_test_cases)
-    def test_partial_update_task(self, test_case: PartialUpdateTestCase):
+    def test_partial_update_task(self, test_case: P_TestCase):
         client, task = self.get_testcase_client_and_task(test_case)
         project, user = task.project, task.project.user
 
@@ -157,7 +157,7 @@ class TestTaskViewSet:
 
     # ----- Destroy Task -----------------------------------------------------------------------------------------------
     @pytest.mark.parametrize("test_case", destroy_task_test_cases)
-    def test_destroy_task(self, test_case: DestroyTestCase):
+    def test_destroy_task(self, test_case: D_TestCase):
         client, task = self.get_testcase_client_and_task(test_case)
         project, user = task.project, task.project.user
         tasks_count = self.initial_task_count(project)
@@ -198,5 +198,4 @@ class TestTaskViewSet:
         task = self.model.objects.get(id=task_id)
 
         for field, value in data.items():
-            if field != "password":
-                assert getattr(task, field) == value
+            assert getattr(task, field) == value

@@ -2,7 +2,7 @@ from collections import namedtuple
 
 import pytest
 
-from tests.conftest import Users, api_client, auth_client, users  # noqa: F401
+from tests.conftest import Users, api_client, auth_client, django_db_setup, users  # noqa: F401
 
 # ----- Data Fixtures --------------------------------------------------------------------------------------------------
 Data = namedtuple("Data", ["for_create", "for_update", "for_partial_update", "optional_fields"])
