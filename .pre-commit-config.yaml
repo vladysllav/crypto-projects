@@ -21,3 +21,11 @@ repos:
         language: system
         types: [ python ]
         pass_filenames: false
+
+      - id: pytest
+        name: pytest
+        entry: docker-compose -f ./account_manager/docker-compose.yml run --rm test pytest --tb=short -v
+        language: system
+        pass_filenames: false
+        types: [ python ]
+#        args: [ "--cov=.", "--cov-report=html" ]
