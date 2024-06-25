@@ -11,7 +11,7 @@ class CredentialSerializer(serializers.ModelSerializer):
 
     def to_representation(self, model: Meta.model):
         """Represents hashed password as raw password"""
-        model.password = model.get_decrypted_password()
+        model.password = model.decrypt_password()
         return super().to_representation(model)
 
     def create(self, validated_data):
@@ -36,7 +36,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = "__all__"
-        read_only_fields = ["user", "slug"]
+        read_only_fields = ["user"]
 
     def create(self, validated_data):
         user = self.context["request"].user
