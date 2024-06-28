@@ -41,38 +41,33 @@ def django_db_setup(django_db_setup, django_db_blocker):  # noqa: django_db_setu
 # ----- User Fixtures --------------------------------------------------------------------------------------------------
 @pytest.fixture
 def users():
-    db_users = UserModel.objects.all()
-    admin = db_users.get(username="admin")
-    user1 = db_users.get(username="user1")
-    user2 = db_users.get(username="user2")
-    return Users(None, admin, user1, user2)
+    usernames = ["admin", "user1", "user2"]
+    users_list = list(UserModel.objects.filter(username__in=usernames))
+    return Users(None, *users_list)
 
 
 # ----- Project Fixtures -----------------------------------------------------------------------------------------------
 @pytest.fixture
 def projects(users):
-    all_projects = ProjectModel.objects.all()
-    project__user1 = all_projects.get(user=users.user1)
-    project__user2 = all_projects.get(user=users.user2)
-    return Projects(project__user1, project__user2)
+    users = [users.user1, users.user2]
+    users_projects = list(ProjectModel.objects.filter(user__in=users))
+    return Projects(*users_projects)
 
 
 # ----- Credential Fixtures --------------------------------------------------------------------------------------------
 @pytest.fixture
 def credentials(projects):
-    all_credentials = CredentialModel.objects.all()
-    cred__project__user1 = all_credentials.get(project=projects.project__user1)
-    cred__project__user2 = all_credentials.get(project=projects.project__user2)
-    return Credentials(cred__project__user1, cred__project__user2)
+    projects = [projects.project__user1, projects.project__user2]
+    creds_list = list(CredentialModel.objects.filter(project__in=projects))
+    return Credentials(*creds_list)
 
 
 # ----- Task Fixtures --------------------------------------------------------------------------------------------------
 @pytest.fixture
 def tasks(projects):
-    all_tasks = TaskModel.objects.all()
-    task__project__user1 = all_tasks.get(project=projects.project__user1)
-    task__project__user2 = all_tasks.get(project=projects.project__user2)
-    return Tasks(task__project__user1, task__project__user2)
+    projects = [projects.project__user1, projects.project__user2]
+    tasks_list = list(TaskModel.objects.filter(project__in=projects))
+    return Tasks(*tasks_list)
 
 
 # ----- Data -----------------------------------------------------------------------------------------------------------

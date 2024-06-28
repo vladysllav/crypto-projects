@@ -51,6 +51,7 @@ ignore = []
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "account_manager.settings.development"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
+addopts = ["-x", "--ff", "--nf", "--color=yes", "--reuse-db"]
 
 [tool.coverage.run]
 branch = true
